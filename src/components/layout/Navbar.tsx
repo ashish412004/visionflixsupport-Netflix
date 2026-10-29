@@ -7,7 +7,6 @@ import {
   Tv, 
   HelpCircle, 
   User, 
-  ShieldCheck, 
   LogOut, 
   ChevronDown
 } from 'lucide-react';
@@ -17,7 +16,6 @@ export function Navbar() {
   const pathname = usePathname();
   const { 
     currentUser, 
-    isAdmin,
     logout 
   } = useApp();
 
@@ -54,7 +52,7 @@ export function Navbar() {
           </div>
         </Link>
 
-        {/* Desktop Navigation Links */}
+        {/* Desktop Navigation Links (Public - Admin links removed) */}
         <nav className="hidden md:flex items-center space-x-1 lg:space-x-2 text-sm font-medium">
           <Link
             href="/"
@@ -96,20 +94,6 @@ export function Navbar() {
           >
             FAQs
           </Link>
-
-          {isAdmin && (
-            <Link
-              href="/admin"
-              className={`px-3 py-1.5 rounded-lg font-semibold flex items-center gap-1.5 transition-colors ${
-                pathname.startsWith('/admin')
-                  ? 'text-white bg-netflixRed shadow-glow-red'
-                  : 'text-netflixRed border border-netflixRed/40 hover:bg-netflixRed/10'
-              }`}
-            >
-              <ShieldCheck className="w-4 h-4" />
-              Admin Portal
-            </Link>
-          )}
         </nav>
 
         {/* Action Controls & User Dropdown */}
@@ -129,7 +113,7 @@ export function Navbar() {
             <div className="relative" ref={userMenuRef}>
               <button
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                className="flex items-center gap-2 p-1.5 pl-2 rounded-lg bg-visionDark-800 hover:bg-visionDark-700 transition-colors border border-visionDark-700 text-left"
+                className="flex items-center gap-2 p-1.5 pl-2 rounded-lg bg-visionDark-800 hover:bg-visionDark-700 transition-colors border border-visionDark-700 text-left cursor-pointer"
               >
                 <div className="w-7 h-7 rounded-md bg-netflixRed/20 text-netflixRed font-bold flex items-center justify-center text-xs">
                   {currentUser.full_name ? currentUser.full_name.slice(0, 1).toUpperCase() : 'U'}
@@ -140,15 +124,12 @@ export function Navbar() {
                 <ChevronDown className="w-3.5 h-3.5 text-gray-400" />
               </button>
 
-              {/* User Menu Dropdown */}
+              {/* User Menu Dropdown (Private - Admin links removed) */}
               {isUserMenuOpen && (
                 <div className="absolute right-0 mt-2 w-56 glass-dropdown rounded-xl shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95">
                   <div className="px-3 py-2 border-b border-visionDark-700">
                     <p className="text-xs font-semibold text-white truncate">{currentUser.full_name}</p>
                     <p className="text-[11px] text-gray-400 truncate">{currentUser.email}</p>
-                    <span className="inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-bold bg-visionDark-800 text-netflixRed border border-netflixRed/20">
-                      {isAdmin ? 'ADMINISTRATOR' : 'CUSTOMER'}
-                    </span>
                   </div>
 
                   <div className="py-1">
@@ -159,16 +140,6 @@ export function Navbar() {
                     >
                       <User className="w-4 h-4 text-gray-400" /> Customer Dashboard
                     </Link>
-
-                    {isAdmin && (
-                      <Link
-                        href="/admin"
-                        onClick={() => setIsUserMenuOpen(false)}
-                        className="flex items-center gap-2 px-3 py-2 text-xs text-netflixRed hover:bg-netflixRed/10 rounded-lg font-semibold transition-colors"
-                      >
-                        <ShieldCheck className="w-4 h-4" /> Admin Console
-                      </Link>
-                    )}
 
                     <Link
                       href="/settings"
@@ -185,7 +156,7 @@ export function Navbar() {
                         await logout();
                         setIsUserMenuOpen(false);
                       }}
-                      className="w-full flex items-center gap-2 px-3 py-2 text-xs text-red-400 hover:bg-red-950/40 rounded-lg transition-colors"
+                      className="w-full flex items-center gap-2 px-3 py-2 text-xs text-red-400 hover:bg-red-950/40 rounded-lg transition-colors cursor-pointer"
                     >
                       <LogOut className="w-4 h-4" /> Sign Out
                     </button>

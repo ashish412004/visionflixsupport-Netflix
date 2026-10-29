@@ -62,9 +62,55 @@ export interface UserProfile {
   email: string;
   full_name: string;
   is_active: boolean;
+  status?: 'ACTIVE' | 'SUSPENDED' | 'PENDING';
+  must_change_password?: boolean;
   created_at: string;
   updated_at: string;
   role?: UserRole;
+}
+
+export interface CustomerPlan {
+  id: string;
+  name: string;
+  max_devices: number;
+  description?: string;
+  created_at: string;
+}
+
+export interface CustomerSubscription {
+  id: string;
+  user_id: string;
+  plan_name: string;
+  status: 'ACTIVE' | 'EXPIRED' | 'SUSPENDED' | 'TRIAL';
+  max_device_allocations: number;
+  expires_at?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CustomerDeviceAllocation {
+  id: string;
+  user_id: string;
+  device_name: string;
+  device_type: string;
+  location?: string;
+  status: 'ACTIVE' | 'PENDING_SETUP' | 'RETIRED';
+  household_network?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AdminCustomerView {
+  id: string;
+  email: string;
+  full_name: string;
+  status: 'ACTIVE' | 'SUSPENDED' | 'PENDING';
+  must_change_password: boolean;
+  created_at: string;
+  plan_name?: string;
+  expires_at?: string;
+  max_devices?: number;
+  allocated_devices_count?: number;
 }
 
 export interface NetflixAccount {

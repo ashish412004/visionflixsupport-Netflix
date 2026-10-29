@@ -108,7 +108,7 @@ export default function HouseholdPage() {
             </p>
           </div>
           <Link
-            href="/admin/accounts"
+            href="/settings"
             className="px-3.5 py-1.5 rounded-xl bg-visionDark-850 hover:bg-visionDark-800 text-xs font-semibold text-gray-200 border border-visionDark-700 transition-colors"
           >
             Manage Hardware

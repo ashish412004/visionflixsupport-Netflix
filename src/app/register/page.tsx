@@ -1,139 +1,61 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { Tv, Lock, Mail, User, ArrowRight, Loader2 } from 'lucide-react';
-import { useApp } from '@/lib/store/app-context';
+import { Tv, ShieldCheck, ArrowRight, Lock } from 'lucide-react';
 import { DisclaimerBanner } from '@/components/ui/DisclaimerBanner';
 
-export default function RegisterPage() {
-  const router = useRouter();
-  const { register } = useApp();
-  const [fullName, setFullName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
-
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!fullName || !email) {
-      setError('Please fill in all required fields.');
-      return;
-    }
-    setIsLoading(true);
-    setError('');
-
-    try {
-      const res = await register(fullName, email, password);
-      if (res.success) {
-        router.push('/dashboard');
-      } else {
-        setError(res.error || 'Registration failed.');
-      }
-    } catch {
-      setError('An error occurred during registration.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
+export default function RegisterDisabledPage() {
   return (
-    <div className="max-w-md mx-auto px-4 py-12 sm:py-16">
+    <div className="max-w-md mx-auto px-4 py-16 sm:py-20 text-center">
       
-      <div className="text-center mb-8">
-        <div className="w-12 h-12 rounded-2xl bg-netflixRed flex items-center justify-center mx-auto mb-3 shadow-glow-red">
-          <Tv className="w-6 h-6 text-white" />
-        </div>
-        <h1 className="text-2xl font-black text-white tracking-wider">
-          VISION<span className="text-netflixRed">FLIX</span>
-        </h1>
-        <p className="text-xs uppercase tracking-widest text-gray-400 font-semibold -mt-0.5">
-          New Customer Portal Registration
-        </p>
+      {/* Brand Icon */}
+      <div className="w-14 h-14 rounded-2xl bg-netflixRed/15 border border-netflixRed/30 flex items-center justify-center mx-auto mb-4 text-netflixRed shadow-glow-red">
+        <Lock className="w-7 h-7" />
       </div>
+
+      <h1 className="text-2xl font-black text-white tracking-wider">
+        VISION<span className="text-netflixRed">FLIX</span>
+      </h1>
+      <p className="text-xs uppercase tracking-widest text-gray-400 font-semibold mb-6">
+        Private Concierge Network
+      </p>
 
       <DisclaimerBanner compact />
 
-      <div className="bg-visionDark-900 border border-visionDark-700/80 rounded-2xl p-6 sm:p-8 shadow-2xl mt-4">
-        
-        <form onSubmit={handleRegister} className="space-y-4">
-          <div>
-            <label className="block text-xs font-semibold text-gray-300 mb-1.5">
-              Full Name
-            </label>
-            <div className="relative flex items-center">
-              <User className="w-4 h-4 text-gray-400 absolute left-3.5" />
-              <input
-                type="text"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                placeholder="Alexander Wright"
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-visionDark-850 border border-visionDark-700 text-white text-xs sm:text-sm focus:outline-none focus:border-netflixRed"
-                required
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-xs font-semibold text-gray-300 mb-1.5">
-              Email Address
-            </label>
-            <div className="relative flex items-center">
-              <Mail className="w-4 h-4 text-gray-400 absolute left-3.5" />
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="customer@example.com"
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-visionDark-850 border border-visionDark-700 text-white text-xs sm:text-sm focus:outline-none focus:border-netflixRed"
-                required
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-xs font-semibold text-gray-300 mb-1.5">
-              Choose a Password
-            </label>
-            <div className="relative flex items-center">
-              <Lock className="w-4 h-4 text-gray-400 absolute left-3.5" />
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="At least 6 characters"
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-visionDark-850 border border-visionDark-700 text-white text-xs sm:text-sm focus:outline-none focus:border-netflixRed"
-                required
-              />
-            </div>
-          </div>
-
-          {error && (
-            <div className="p-3 rounded-xl bg-red-950/40 border border-red-800 text-red-300 text-xs">
-              {error}
-            </div>
-          )}
-
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full py-3 rounded-xl bg-netflixRed hover:bg-netflixRed-hover text-white font-bold text-xs sm:text-sm transition-all shadow-glow-red flex items-center justify-center gap-2"
-          >
-            {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Account'}
-            {!isLoading && <ArrowRight className="w-4 h-4" />}
-          </button>
-        </form>
-
-        <div className="mt-6 text-center text-xs text-gray-400">
-          Already have an account?{' '}
-          <Link href="/login" className="text-netflixRed hover:underline font-semibold">
-            Sign In
-          </Link>
+      <div className="bg-visionDark-900 border border-visionDark-700/80 rounded-2xl p-6 sm:p-8 shadow-2xl mt-4 space-y-4">
+        <div className="w-10 h-10 rounded-xl bg-visionDark-800 flex items-center justify-center mx-auto text-yellow-400">
+          <ShieldCheck className="w-5 h-5" />
         </div>
 
+        <h2 className="text-base font-bold text-white">
+          Public Registration Closed
+        </h2>
+
+        <p className="text-xs text-gray-300 leading-relaxed">
+          VisionFlix customer accounts are provisioned exclusively through our administrative concierge. Self-registration is strictly disabled to maintain secure support allocations.
+        </p>
+
+        <p className="text-[11px] text-gray-400">
+          If you have been issued login credentials by your administrator, please sign in below.
+        </p>
+
+        <Link
+          href="/login"
+          className="w-full py-3 rounded-xl bg-netflixRed hover:bg-netflixRed-hover text-white font-bold text-xs sm:text-sm transition-all shadow-glow-red flex items-center justify-center gap-2"
+        >
+          <span>Customer Login</span>
+          <ArrowRight className="w-4 h-4" />
+        </Link>
       </div>
+
+      <div className="mt-6 text-center text-xs text-gray-500">
+        Need assistance? Return to{' '}
+        <Link href="/" className="text-gray-300 hover:text-white underline">
+          Home
+        </Link>
+      </div>
+
     </div>
   );
 }

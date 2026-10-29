@@ -1,11 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getGoogleOAuthUrl } from '@/lib/gmail/service';
 
+function getRedirectUri(req: NextRequest): string {
+  const reqOrigin = req.nextUrl.origin;
+  if (reqOrigin && reqOrigin.includes('localhost')) {
+    return `${reqOrigin.replace(/\/$/, '')}/api/auth/google/callback`;
+  }
+  if (process.env.NEXT_PUBLIC_SITE_URL) {
+    return `${process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, '')}/api/auth/google/callback`;
+  }
+  return `${reqOrigin.replace(/\/$/, '')}/api/auth/google/callback`;
+}
+
 export async function GET(req: NextRequest) {
   try {
-    const origin = req.nextUrl.origin;
-    const redirectUri = `${origin}/api/auth/google/callback`;
-
+    const redirectUri = getRedirectUri(req);
     const authUrl = getGoogleOAuthUrl(redirectUri);
     return NextResponse.redirect(authUrl);
   } catch (err: unknown) {

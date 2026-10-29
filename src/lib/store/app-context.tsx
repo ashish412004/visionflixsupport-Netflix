@@ -91,7 +91,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [gmailMessages, setGmailMessages] = useState<GmailNotificationMessage[]>([]);
   const [isLoadingGmail, setIsLoadingGmail] = useState(false);
 
-  const isAdmin = true; // Owner/Admin of this personal management system
+  const isAdmin = useMemo(() => {
+    return Boolean(
+      currentUser &&
+      currentUser.email?.toLowerCase() === 'hhshukla241099@gmail.com' &&
+      (currentUser.role === 'admin' || currentUser.role === 'super_admin')
+    );
+  }, [currentUser]);
 
   // Refresh live records from Supabase
   const refreshData = useCallback(async () => {
@@ -248,6 +254,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
       if (data.user) {
         const profile = await db.fetchProfile(data.user.id);
+        if (profile?.status === 'SUSPENDED') {
+          await supabase.auth.signOut();
+          return { 
+            success: false, 
+            error: 'Your account has been suspended by the administrator. Please contact support.' 
+          };
+        }
         setCurrentUser(profile);
         await refreshData();
         await refreshGmailMessages();
@@ -260,41 +273,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const register = async (fullName: string, email: string, password: string) => {
-    const supabase = createClient();
-    if (!supabase) {
-      return { success: false, error: 'Supabase client is not configured with environment keys.' };
-    }
-
-    try {
-      const { data, error } = await supabase.auth.signUp({
-        email: email.trim(),
-        password,
-        options: { data: { full_name: fullName.trim() } },
-      });
-
-      if (error) {
-        return { success: false, error: error.message };
-      }
-
-      if (data.user) {
-        await supabase.from('profiles').upsert({
-          id: data.user.id,
-          email: email.trim(),
-          full_name: fullName.trim(),
-          is_active: true,
-        });
-
-        const profile = await db.fetchProfile(data.user.id);
-        setCurrentUser(profile);
-        await refreshData();
-      }
-
-      return { success: true };
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Registration failed.';
-      return { success: false, error: msg };
-    }
+  const register = async () => {
+    return {
+      success: false,
+      error: 'Public customer registration is disabled. Accounts must be provisioned by the administrator.',
+    };
   };
 
   const logout = async () => {

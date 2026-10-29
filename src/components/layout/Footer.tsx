@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { Tv, Shield, HelpCircle, FileText, Lock } from 'lucide-react';
+import { Tv, Shield, Lock } from 'lucide-react';
 
 export function Footer() {
   return (
@@ -55,7 +55,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="text-white font-semibold text-sm mb-3">Account & Security</h4>
+            <h4 className="text-white font-semibold text-sm mb-3">Customer Account</h4>
             <ul className="space-y-2">
               <li>
                 <Link href="/dashboard" className="hover:text-white transition-colors">
@@ -68,8 +68,8 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/admin" className="text-gray-400 hover:text-netflixRed transition-colors">
-                  Administrative Console
+                <Link href="/tickets" className="hover:text-white transition-colors">
+                  Active Support Tickets
                 </Link>
               </li>
               <li className="flex items-center gap-1 text-gray-500">

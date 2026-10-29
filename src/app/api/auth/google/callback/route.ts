@@ -2,13 +2,26 @@ import { NextRequest, NextResponse } from 'next/server';
 import { exchangeGoogleAuthCode, getGoogleUserEmail } from '@/lib/gmail/service';
 import { createServerSupabaseClient } from '@/lib/supabase/server';
 
+function getRedirectUri(req: NextRequest): string {
+  const reqOrigin = req.nextUrl.origin;
+  if (reqOrigin && reqOrigin.includes('localhost')) {
+    return `${reqOrigin.replace(/\/$/, '')}/api/auth/google/callback`;
+  }
+  if (process.env.NEXT_PUBLIC_SITE_URL) {
+    return `${process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, '')}/api/auth/google/callback`;
+  }
+  return `${reqOrigin.replace(/\/$/, '')}/api/auth/google/callback`;
+}
+
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
   const code = searchParams.get('code');
   const error = searchParams.get('error');
 
-  const origin = req.nextUrl.origin;
-  const redirectUri = `${origin}/api/auth/google/callback`;
+  const origin = req.nextUrl.origin.includes('localhost')
+    ? req.nextUrl.origin
+    : (process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') || req.nextUrl.origin);
+  const redirectUri = getRedirectUri(req);
 
   if (error || !code) {
     return NextResponse.redirect(`${origin}/admin/accounts?error=${encodeURIComponent(error || 'Authorization cancelled')}`);

@@ -1,5 +1,8 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
+import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
+
+export const AUTHORIZED_ADMIN_EMAIL = 'hhshukla241099@gmail.com';
 
 export function createServerSupabaseClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -38,4 +41,46 @@ export function createServerSupabaseClient() {
       },
     }
   );
+}
+
+/**
+ * Administrative Supabase Client (Service Role)
+ * Must only be invoked in secure server-side API routes.
+ */
+export function createAdminSupabaseClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!supabaseUrl || !serviceRoleKey) {
+    return null;
+  }
+
+  return createSupabaseClient(supabaseUrl, serviceRoleKey, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+  });
+}
+
+/**
+ * Server-side Admin Authorization Guard
+ * Validates active session and confirms email matches AUTHORIZED_ADMIN_EMAIL.
+ */
+export async function verifyServerAdmin() {
+  const supabase = createServerSupabaseClient();
+  if (!supabase) {
+    return { authorized: false, error: 'Database connection unavailable', user: null };
+  }
+
+  const { data: { user }, error } = await supabase.auth.getUser();
+  if (error || !user) {
+    return { authorized: false, error: 'Authentication required', user: null };
+  }
+
+  if (user.email?.toLowerCase() !== AUTHORIZED_ADMIN_EMAIL.toLowerCase()) {
+    return { authorized: false, error: 'Access Denied: Administrator role required', user };
+  }
+
+  return { authorized: true, error: null, user };
 }

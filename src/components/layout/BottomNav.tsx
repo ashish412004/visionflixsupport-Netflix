@@ -3,12 +3,12 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Tv, Shield, Inbox, User, ShieldCheck } from 'lucide-react';
+import { Home, Tv, Shield, Inbox, User } from 'lucide-react';
 import { useApp } from '@/lib/store/app-context';
 
 export function BottomNav() {
   const pathname = usePathname();
-  const { currentUser, gmailMessages, isAdmin } = useApp();
+  const { currentUser, gmailMessages } = useApp();
 
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-visionDark-950/95 backdrop-blur-lg border-t border-visionDark-700/80 px-2 py-1 safe-area-bottom">
@@ -63,26 +63,19 @@ export function BottomNav() {
           <span className="text-[10px] font-medium tracking-tight">Requests</span>
         </Link>
 
-        {/* 5. Account or Admin */}
+        {/* 5. Customer Profile / Dashboard (No Admin link shown) */}
         <Link
-          href={isAdmin ? "/admin" : (currentUser ? "/dashboard" : "/login")}
+          href={currentUser ? "/dashboard" : "/login"}
           className={`flex flex-col items-center justify-center py-1.5 transition-colors ${
-            pathname.startsWith('/dashboard') || pathname.startsWith('/admin')
+            pathname.startsWith('/dashboard') || pathname.startsWith('/login')
               ? 'text-netflixRed'
               : 'text-gray-400 hover:text-gray-200'
           }`}
         >
-          {isAdmin ? (
-            <>
-              <ShieldCheck className="w-5 h-5 mb-0.5 text-netflixRed" />
-              <span className="text-[10px] font-semibold text-netflixRed tracking-tight">Admin</span>
-            </>
-          ) : (
-            <>
-              <User className="w-5 h-5 mb-0.5" />
-              <span className="text-[10px] font-medium tracking-tight">Profile</span>
-            </>
-          )}
+          <User className="w-5 h-5 mb-0.5" />
+          <span className="text-[10px] font-medium tracking-tight">
+            {currentUser ? 'Dashboard' : 'Login'}
+          </span>
         </Link>
 
       </div>

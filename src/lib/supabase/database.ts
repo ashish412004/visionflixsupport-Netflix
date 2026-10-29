@@ -28,15 +28,20 @@ export async function fetchProfile(userId: string): Promise<UserProfile | null> 
 
     if (error || !profile) return null;
 
-    const { data: adminRole } = await supabase
-      .from('admin_roles')
-      .select('role_level')
+    // Check user_roles table
+    const { data: userRole } = await supabase
+      .from('user_roles')
+      .select('role')
       .eq('user_id', userId)
       .maybeSingle();
 
+    const isAuthorizedAdmin = 
+      profile.email?.toLowerCase() === 'hhshukla241099@gmail.com' &&
+      (userRole?.role === 'admin' || !userRole);
+
     return {
       ...profile,
-      role: adminRole ? adminRole.role_level : 'admin',
+      role: isAuthorizedAdmin ? 'admin' : 'customer',
     };
   } catch (err) {
     console.error('fetchProfile error:', err);
